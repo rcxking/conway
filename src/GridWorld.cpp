@@ -8,8 +8,12 @@
  * 12/6/20
  */
 #include "GridWorld.h"
+
 #include <cstring>
+#include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
 
 // GridWorld::GridWorld()
 GridWorld::GridWorld(const size_t rows, const size_t cols) :
@@ -141,4 +145,45 @@ void GridWorld::DisplayWorld() const {
     std::cout << std::endl;
   }
   std::cout << std::endl;
+}
+
+// bool GridWorld::loadWorld()
+bool GridWorld::loadWorld(const std::string &worldName) {
+  // Ensure worldName file can be opened
+  std::ifstream worldFile(worldName);
+  if (!worldFile) {
+    std::cerr << "ERROR: Unable to load file: " << worldName << " because of "
+      "error: " << strerror(errno) << std::endl;
+    return false;
+  }
+
+  // Read all characters in the file; halt if there's a non-0 or 1 character.
+  std::vector<int> buffer;
+  std::string nextLine;
+
+  while (std::getline(worldFile, nextLine)) {
+    for (size_t i = 0; i < nextLine.length(); ++i) {
+      // Ensure only 0/1 characters are present
+      if ((nextLine[i] != '0') && (nextLine[i] != '1')) {
+        std::cerr << "ERROR: non-0/1 character found in line: " << nextLine <<
+          std::endl;
+        return false;
+      }
+      buffer.push_back(static_cast<int>(nextLine[i]) - '0');
+    }
+  }
+
+  // Ensure number of characters read is equal to world size
+  if (buffer.size() != size_) {
+    std::cerr << "ERROR: buffer size of: " << buffer.size() << " does not "
+      "match size_: " << size_ << std::endl;
+    return false;
+  }
+
+  // Copy data over
+  for (size_t i = 0; i < buffer.size(); ++i) {
+    board_[i] = buffer[i];
+  }
+
+  return true;
 }

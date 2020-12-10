@@ -13,6 +13,7 @@
 #include <catch2/catch.hpp>
 
 #include "GridWorld.h"
+#include <string>
 
 SCENARIO("a grid is created", "[GridWorld]") {
   GIVEN("A gridworld is constructed with size 5x6") {
@@ -58,6 +59,46 @@ SCENARIO("a grid is created", "[GridWorld]") {
         REQUIRE(ret2                == true);
         REQUIRE(world.IsAlive(1, 1) == false);
         REQUIRE(world.NumAlive()    == 0);
+      }
+    }
+  }
+
+  GIVEN("An empty gridworld of size 3x4") {
+    GridWorld world(3, 4);
+    WHEN("An invalid world file is given") {
+      const bool ret = world.loadWorld("doesnotexist");
+      THEN("An error is returned") {
+        REQUIRE(ret == false);
+      }
+    }
+    WHEN("A text file containing an empty world is given") {
+      const bool ret = world.loadWorld("empty.txt");
+      THEN("An error is returned") {
+        REQUIRE(ret == false);
+      }
+    }
+    WHEN("A text file containing a 3x4 world is given") {
+      const bool ret = world.loadWorld("good_world.txt");
+      THEN("The world is correctly loaded") {
+        REQUIRE(ret == true);
+        for (size_t i = 0; i < world.GetSize(); ++i) {
+          if ((i % 2) == 0)
+            REQUIRE(world.GetBoard()[i] == 0);
+          else
+            REQUIRE(world.GetBoard()[i] == 1);
+        }
+      }
+    }
+    WHEN("A text file containing a 5x6 world is given") {
+      const bool ret = world.loadWorld("bad_world.txt");
+      THEN("An error is returned") {
+        REQUIRE(ret == false);
+      }
+    }
+    WHEN("A text file containing a 3x4 world with non-1/0 chars is given") {
+      const bool ret = world.loadWorld("invalid_world.txt");
+      THEN("An error is returned") {
+        REQUIRE(ret == false);
       }
     }
   }
