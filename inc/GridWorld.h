@@ -9,6 +9,8 @@
  * 12/6/20
  */
 #include <cstddef> // size_t definition
+#include <string>
+
 class GridWorld {
 public:
   GridWorld(const size_t rows, const size_t cols);
@@ -39,6 +41,15 @@ public:
   void GameOfLifeIteration() const;
 
   void DisplayWorld() const;
+
+  /**
+   * @brief Loads the specified world as the board.  Only accepts 0 for dead
+   * cells and 1 for live cells.
+   *
+   * @param worldName: string denoting the filename of the world to load.
+   * @return bool: true if successfully loaded world; false otherwise.
+   */
+  bool loadWorld(const std::string &worldName);
 
   // Accessors
   inline size_t GetRows() const { return rows_; }
