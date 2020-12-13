@@ -9,6 +9,7 @@
  */
 #include "GridWorld.h"
 
+#include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -135,6 +136,11 @@ void GridWorld::GameOfLifeIteration() const {
 
 // void GridWorld::DisplayWorld()
 void GridWorld::DisplayWorld() const {
+  // Issue terminal control character to clear the screen
+  printf("\x1b[2J");
+  // Issue terminal control character to move cursor to first line
+  printf("\x1b[H");
+
   for (size_t row = 0; row < rows_; ++row) {
     for (size_t col = 0; col < cols_; ++col) {
       if (board_[row * cols_ + col])
